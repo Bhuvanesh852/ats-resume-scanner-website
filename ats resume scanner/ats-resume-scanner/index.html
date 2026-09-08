@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bhuvanesh — ATS Resume Scanner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">◧</span>
+    <span class="brand-name">Bhuvanesh ATS Scanner</span>
+  </div>
+  <nav class="topnav">
+    <a href="#how">How it works</a>
+    <a href="#privacy">Privacy</a>
+  </nav>
+</header>
+
+<main class="layout">
+
+  <section class="workspace">
+
+    <section class="hero">
+      <h1>See your résumé the way a hiring pipeline does.</h1>
+      <p class="hero-sub">Upload a résumé, optionally paste a job description, and get an explainable ATS-style score, keyword gaps, and a prioritized fix list — plus an assistant that answers your hiring questions. Everything runs in your browser; nothing is uploaded anywhere.</p>
+    </section>
+
+    <section class="card upload-card">
+      <div class="upload-grid">
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-icon">⇪</div>
+          <p><strong>Drop your résumé here</strong> or click to browse</p>
+          <p class="hint">.pdf, .docx, or .txt — max 8MB</p>
+          <input type="file" id="fileInput" accept=".pdf,.docx,.txt" hidden />
+        </div>
+        <div class="paste-col">
+          <label for="pasteArea">Or paste résumé text</label>
+          <textarea id="pasteArea" placeholder="Paste your résumé text here…"></textarea>
+        </div>
+      </div>
+      <p id="fileMeta" class="file-meta"></p>
+
+      <div class="optional-grid">
+        <div class="field">
+          <label for="jobArea">Target job description <span class="optional-tag">optional</span></label>
+          <textarea id="jobArea" placeholder="Paste a job description to check keyword match…"></textarea>
+        </div>
+        <div class="field">
+          <label for="roleSelect">Or pick a target role <span class="optional-tag">optional</span></label>
+          <select id="roleSelect">
+            <option value="">Select a role…</option>
+          </select>
+          <p class="hint">Used for role-wise keyword and project suggestions when no job description is supplied.</p>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="scanBtn" class="btn btn-primary">Scan My Résumé</button>
+        <button id="sampleBtn" class="btn btn-ghost">Try Sample Résumé</button>
+      </div>
+    </section>
+
+    <section id="emptyState" class="card empty-state">
+      <p>Your score breakdown, findings, and action plan will appear here after you scan a résumé.</p>
+    </section>
+
+    <section id="resultsPanel" class="results hidden">
+
+      <div class="card score-card">
+        <div class="score-ring-wrap">
+          <svg viewBox="0 0 120 120" class="score-ring">
+            <circle cx="60" cy="60" r="54" class="ring-bg"/>
+            <circle id="scoreRingFg" cx="60" cy="60" r="54" class="ring-fg" transform="rotate(-90 60 60)"/>
+          </svg>
+          <div class="score-ring-label">
+            <span id="scoreNumber">0</span>
+            <span class="score-out-of">/100</span>
+          </div>
+        </div>
+        <div class="score-band-wrap">
+          <p id="scoreBand" class="score-band"></p>
+          <p class="hint">ATS-style compatibility estimate. Actual ATS systems and employer processes vary.</p>
+          <button id="exportBtn" class="btn btn-ghost btn-small">Export Report (.txt)</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Score Breakdown</h3>
+        <div id="categoryList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Top Action Plan</h3>
+        <ul id="actionPlan" class="plan-list"></ul>
+      </div>
+
+      <div class="card" id="matchSection"></div>
+
+      <div class="card">
+        <h3>Key Findings</h3>
+        <ul id="findingsList" class="findings-list"></ul>
+      </div>
+
+      <p id="disclaimer" class="disclaimer hidden">
+        This tool estimates ATS compatibility and hiring readiness for guidance only. It never invents facts about you, and it can't guarantee that any specific ATS will parse your résumé a certain way, or that you'll get an interview or offer.
+      </p>
+
+    </section>
+
+    <section id="how" class="card info-card">
+      <h3>How it works</h3>
+      <p>Your résumé is parsed and scored entirely in your browser using a fixed 100-point rubric: parsability, contact info, summary, experience quality, skills/keywords, education/projects/certifications, writing quality, and hiring readiness. If you add a job description or pick a role, keyword matching and project suggestions become role- or job-specific.</p>
+    </section>
+
+    <section id="privacy" class="card info-card">
+      <h3>Privacy</h3>
+      <p>Nothing you paste or upload leaves your browser — there is no server component. Refreshing the page clears everything.</p>
+    </section>
+
+  </section>
+
+  <aside class="assistant">
+    <div class="assistant-head">
+      <span class="assistant-dot"></span>
+      <h2>Assistant</h2>
+    </div>
+    <div id="chatLog" class="chat-log">
+      <div class="chat-msg from-bot">Hi — I'm your résumé assistant. Scan a résumé and I'll explain your score, suggest keywords and projects, and answer hiring questions in plain language.</div>
+    </div>
+    <div id="chatChips" class="chat-chips"></div>
+    <div class="chat-input-row">
+      <input id="chatInput" type="text" placeholder="Ask about your résumé or job search…" />
+      <button id="chatSendBtn" class="btn btn-primary btn-small">Send</button>
+    </div>
+  </aside>
+
+</main>
+
+<footer class="footer">
+  <p>Bhuvanesh — CSE graduate | Email: sbhuvanesh713@gmail.com | Runs locally in your browser.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="roles-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
